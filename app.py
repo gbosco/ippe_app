@@ -5,6 +5,8 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    print('X-Kommo-Secret:::', request.headers.get('X-Kommo-Secret'))
+
     # Logar os headers da requisição
     print("Headers da Requisição:", request.headers)
 
