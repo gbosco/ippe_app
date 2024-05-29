@@ -1,13 +1,10 @@
 import os
-import json
 from flask import Flask, request, jsonify, abort
 
 app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-
-
     # Logar os headers da requisição
     print("Headers da Requisição:", request.headers)
 
@@ -16,8 +13,12 @@ def webhook():
 
     # Tentar carregar o JSON manualmente
     try:
-        data = request.get_json(force=True)
-        print("Dados recebidos:", data)
+        if request.content_type == 'application/x-www-form-urlencoded':
+            data = request.form.to_dict()
+            print("Dados recebidos (form):", data)
+        else:
+            data = request.get_json(force=True)
+            print("Dados recebidos (json):", data)
     except Exception as e:
         data = None
         print("Erro ao decodificar JSON:", e)
