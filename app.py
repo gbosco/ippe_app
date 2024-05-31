@@ -21,14 +21,13 @@ def webhook():
         # Processar a mensagem recebida
         try:
             print("Processando mensagem:" )
-            text = data.items().get('message[add][0][text]', 'Sem Texto')
+            text = data.get('message[add][0][text]', 'Sem Texto')
             
-            author = data.items().get('message[add][0][author][id]', 'Autor Desconhecido')
+            author = data.get('message[add][0][author][id]', 'Autor Desconhecido')
             
             # Faça o processamento que você precisa com esses dados
             print(f"Texto da mensagem: {text}")
             print(f"Autor: {author}")
-            print(f"ID do chat: {chat_id}")
 
         except Exception as e:
             print("Erro ao processar a mensagem:", e)
