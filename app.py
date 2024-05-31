@@ -1,7 +1,13 @@
 import os
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
+
+#Que concede acesso do aplocativo
+#https://www.kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message
+CLIENT_ID = os.getenv('KOMMO_SECRET_KEY')
+CLIENT_SECRET = os.getenv('KOMMO_INTEGRATION_ID')
+REDIRECT_URI = 'https://crm-ippe-6ccc57521801.herokuapp.com/'  # Use a URL apropriada para produção
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -33,6 +39,44 @@ def webhook():
             print("Erro ao processar a mensagem:", e)
 
     return jsonify({'status': 'success'}), 200
+
+
+@app.route('/')
+def home():
+    # URL para redirecionar o usuário para autorização
+    #auth_url = f"https://marceloluizpereira.kommo.com/oauth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&state=YOUR_STATE"
+    auth_url = f"https://www.kommo.com/oauth/?client_id={CLIENT_ID}&state=1&mode=post_message"
+    return redirect(auth_url)
+
+#https://www.kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message
+@app.route('/auth')
+def auth():
+    code = request.args.get('code')
+    if not code:
+        return "Authorization code not found", 400
+
+    # Trocar o código de autorização por um token de acesso
+    token_url = 'https://marceloluizpereira.kommo.com/oauth2/access_token'
+    payload = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': REDIRECT_URI
+    }
+    response = request.post(token_url, json=payload)
+    token_data = response.json()
+
+    # Salvar o token de acesso (você pode salvar no banco de dados ou variável de ambiente)
+    access_token = token_data.get('access_token')
+    os.environ['KOMMO_ACCESS_TOKEN'] = access_token
+    
+    print('KOMMO_ACCESS_TOKEN:', access_token)
+
+    return "Authorization successful. Access token obtained."
+
+
+
 
 if __name__ == '__main__':
     app.run()
