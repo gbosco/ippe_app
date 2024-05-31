@@ -23,7 +23,7 @@ def webhook():
             print("Processando mensagem:" )
             text = data.get('message[add][0][text]', 'Sem Texto')
             
-            author = data.get('message[add][0][author][id]', 'Autor Desconhecido')
+            author = data.get('message[add][0][author][name]', 'Autor Desconhecido')
             
             # Faça o processamento que você precisa com esses dados
             print(f"Texto da mensagem: {text}")
