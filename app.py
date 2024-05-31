@@ -20,28 +20,15 @@ def webhook():
     if data:
         # Processar a mensagem recebida
         try:
-            messages = []
-            for key, value in data.items():
-                if key.startswith('message[add]'):
-                    # Extrair partes da mensagem
-                    parts = key.split('[')
-                    if len(parts) > 3:
-                        index = int(parts[2].strip(']'))
-                        field = parts[3].strip(']')
-                        if len(messages) <= index:
-                            messages.append({})
-                        messages[index][field] = value
-
-            for message in messages:
-                print("Processando mensagem:", message)
-                text = message.get('text', 'Sem texto')
-                author = message.get('author', {}).get('name', 'Desconhecido')
-                chat_id = message.get('chat_id', 'Desconhecido')
-
-                # Faça o processamento que você precisa com esses dados
-                print(f"Texto da mensagem: {text}")
-                print(f"Autor: {author}")
-                print(f"ID do chat: {chat_id}")
+            print("Processando mensagem:" )
+            text = data.items().get('message[add][0][text]', 'Sem Texto')
+            
+            author = data.items().get('message[add][0][author][id]', 'Autor Desconhecido')
+            
+            # Faça o processamento que você precisa com esses dados
+            print(f"Texto da mensagem: {text}")
+            print(f"Autor: {author}")
+            print(f"ID do chat: {chat_id}")
 
         except Exception as e:
             print("Erro ao processar a mensagem:", e)
