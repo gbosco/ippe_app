@@ -4,10 +4,9 @@ from flask import Flask, request, redirect, url_for, jsonify
 app = Flask(__name__)
 
 #Que concede acesso do aplocativo
-#https://www.kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message
 CLIENT_ID = os.getenv('KOMMO_INTEGRATION_ID')
 CLIENT_SECRET = os.getenv('KOMMO_SECRET_KEY')
-REDIRECT_URI = 'https://crm-ippe-6ccc57521801.herokuapp.com/auth/'  # Use a URL apropriada para produção
+REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -46,7 +45,7 @@ def home():
     # URL para redirecionar o usuário para autorização
     #auth_url = f"https://marceloluizpereira.kommo.com/oauth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&state=YOUR_STATE"
     #https://kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message&redirect_uri=https://crm-ippe-6ccc57521801.herokuapp.com/auth
-    auth_url = f"https://www.kommo.com/oauth/?client_id={CLIENT_ID}&state=1&mode=post_message&redirect_uri={REDIRECT_URI}&response_type=code"
+    auth_url = f"https://www.kommo.com/oauth/?client_id={CLIENT_ID}&state=xyz&mode=post_message&redirect_uri={REDIRECT_URI}&response_type=code"
     print('auth_url *---> ', auth_url)
     return redirect(auth_url)
 
