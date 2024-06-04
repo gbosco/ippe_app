@@ -10,8 +10,9 @@ REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 def send_message(chat_id, text):
     url = 'https://marceloluizpereira.amocrm.com/api/v4/messages'
+    ACCESS_TOKEN = 'x'
     headers = {
-        'Authorization': f'Bearer {'ACCESS_TOKEN'}',
+        'Authorization': f'Bearer {ACCESS_TOKEN}',
         'Content-Type': 'application/json'
     }
     payload = {
@@ -87,7 +88,7 @@ def auth():
     
     print('KOMMO_ACCESS_TOKEN:', access_token)
 
-    return f"Authorization successful. Access token obtained. -> {access_token}"
+    return "Authorization successful. Access token obtained."
 
 
 
