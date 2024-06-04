@@ -10,7 +10,7 @@ REDIRECT_URI = os.getenv('REDIRECT_URI')
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
 
 @app.route('/send_msg')
-def send_message(chat_id, text):
+def send_message():
     #chat_id = request.args.get('chat_id')
     chat_id = '8f8ec926-9226-47fa-96aa-63a73fa38b44'
     text = 'teste'
