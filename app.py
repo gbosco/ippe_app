@@ -7,10 +7,14 @@ app = Flask(__name__)
 CLIENT_ID = os.getenv('KOMMO_INTEGRATION_ID')
 CLIENT_SECRET = os.getenv('KOMMO_SECRET_KEY')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
 
+@app.route('/send_msg')
 def send_message(chat_id, text):
+    chat_id = request.args.get('chat_id')
+    text = request.args.get('text')
     url = 'https://marceloluizpereira.amocrm.com/api/v4/messages'
-    ACCESS_TOKEN = 'x'
+    
     headers = {
         'Authorization': f'Bearer {ACCESS_TOKEN}',
         'Content-Type': 'application/json'
@@ -87,6 +91,8 @@ def auth():
     access_token = token_data.get('access_token')
     #os.environ['KOMMO_ACCESS_TOKEN'] = access_token
     
+    print('request.content_type:', request.content_type)
+    print('json:', token_data)
     print('KOMMO_ACCESS_TOKEN:', access_token)
 
     return "Authorization successful. Access token obtained."
