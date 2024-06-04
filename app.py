@@ -11,8 +11,9 @@ ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
 
 @app.route('/send_msg')
 def send_message(chat_id, text):
-    chat_id = request.args.get('chat_id')
-    text = request.args.get('text')
+    #chat_id = request.args.get('chat_id')
+    chat_id = '8f8ec926-9226-47fa-96aa-63a73fa38b44'
+    text = 'teste'
     url = 'https://marceloluizpereira.amocrm.com/api/v4/messages'
     
     headers = {
