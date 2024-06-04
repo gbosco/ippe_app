@@ -5,8 +5,8 @@ app = Flask(__name__)
 
 #Que concede acesso do aplocativo
 #https://www.kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message
-CLIENT_ID = os.getenv('KOMMO_SECRET_KEY')
-CLIENT_SECRET = os.getenv('KOMMO_INTEGRATION_ID')
+CLIENT_ID = os.getenv('KOMMO_INTEGRATION_ID')
+CLIENT_SECRET = os.getenv('KOMMO_SECRET_KEY')
 REDIRECT_URI = 'https://crm-ippe-6ccc57521801.herokuapp.com/'  # Use a URL apropriada para produção
 
 @app.route('/webhook', methods=['POST'])
@@ -48,8 +48,8 @@ def home():
     #https://kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message&redirect_uri=https://crm-ippe-6ccc57521801.herokuapp.com/auth
     auth_url = f"https://www.kommo.com/oauth/?client_id={CLIENT_ID}&state=1&mode=post_message&redirect_uri={REDIRECT_URI}&response_type=code"
     print('auth_url *---> ', auth_url)
-    #return redirect(auth_url)
-    return CLIENT_ID + '###' + CLIENT_SECRET
+    return redirect(auth_url)
+    
     
 
 @app.route('/auth')
