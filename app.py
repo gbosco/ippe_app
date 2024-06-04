@@ -1,4 +1,4 @@
-import os
+import os, requests
 from flask import Flask, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
@@ -45,11 +45,10 @@ def webhook():
 def home():
     # URL para redirecionar o usuário para autorização
     #auth_url = f"https://marceloluizpereira.kommo.com/oauth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&state=YOUR_STATE"
-    #auth_url = f"https://www.kommo.com/oauth/?client_id={CLIENT_ID}&state=1&mode=post_message"
-    #return redirect(auth_url)
-    #return auth_url
-    #https://www.kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message
-    return ''
+    #https://kommo.com/oauth/?client_id=e921a2d5-d899-4252-9ae4-4fa11740eceb&state=1&mode=post_message&redirect_uri=https://crm-ippe-6ccc57521801.herokuapp.com/auth
+    auth_url = f"https://www.kommo.com/oauth/?client_id={CLIENT_ID}&state=1&mode=post_message&redirect_uri={REDIRECT_URI}&response_type=code"
+    return redirect(auth_url)
+    
 
 @app.route('/auth')
 def auth():
@@ -66,7 +65,7 @@ def auth():
         'code': code,
         'redirect_uri': REDIRECT_URI
     }
-    #response = requests.post(token_url, json=payload)
+    response = requests.post(token_url, json=payload)
     token_data = response.json()
 
     # Salvar o token de acesso (você pode salvar no banco de dados ou variável de ambiente)
