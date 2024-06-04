@@ -8,6 +8,20 @@ CLIENT_ID = os.getenv('KOMMO_INTEGRATION_ID')
 CLIENT_SECRET = os.getenv('KOMMO_SECRET_KEY')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
+def send_message(chat_id, text):
+    url = 'https://marceloluizpereira.amocrm.com/api/v4/messages'
+    headers = {
+        'Authorization': f'Bearer {'ACCESS_TOKEN'}',
+        'Content-Type': 'application/json'
+    }
+    payload = {
+        "chat_id": chat_id,
+        "text": text
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    return response.json()
+
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     # Tentar carregar o JSON manualmente
@@ -69,11 +83,11 @@ def auth():
 
     # Salvar o token de acesso (você pode salvar no banco de dados ou variável de ambiente)
     access_token = token_data.get('access_token')
-    os.environ['KOMMO_ACCESS_TOKEN'] = access_token
+    #os.environ['KOMMO_ACCESS_TOKEN'] = access_token
     
     print('KOMMO_ACCESS_TOKEN:', access_token)
 
-    return "Authorization successful. Access token obtained."
+    return f"Authorization successful. Access token obtained. -> {access_token}"
 
 
 
