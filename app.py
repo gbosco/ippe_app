@@ -72,6 +72,7 @@ def auth():
 
     # Trocar o código de autorização por um token de acesso
     token_url = 'https://marceloluizpereira.kommo.com/oauth2/access_token'
+    headers = {'Content-Type':'application/json'}
     payload = {
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET,
@@ -79,7 +80,7 @@ def auth():
         'code': code,
         'redirect_uri': REDIRECT_URI
     }
-    response = requests.post(token_url, json=payload)
+    response = requests.post(token_url, json=payload, headers=headers)
     token_data = response.json()
 
     # Salvar o token de acesso (você pode salvar no banco de dados ou variável de ambiente)
