@@ -15,7 +15,7 @@ def make_openai_request(messages):
     return response.choices
 
 
-def get_keywords_from_openai(text: str) -> List[str]:
+def get_keywords(text: str) -> List[str]:
     choices = make_openai_request([
         {"role": "user", "content": f'extract keywords from this statement {text}'}])
 
@@ -30,12 +30,16 @@ def run_sentiment_analysis(text: str):
 
 
 def generate_text_response(text: str):
-    prompt = f"Generate an professional, appropriate response for the text by a customer: \n\n{text}"
+    sentiment = run_sentiment_analysis(text)
+    print(f"Sentiment analysis result: {sentiment}")
+    keywords = get_keywords(text)
+    print(f"Extracted keywords: {keywords}")
+    prompt = f"Generate an professional, appropriate response for the text by a customer: \n\n{text},"
     choices = make_openai_request([{"role": "user", "content": prompt}])
     return choices[0].message.content
 
 
-def translate_text(text: str, lang="english"):
+def translate_text(text: str, lang="portuguese"):
     prompt = f"translate the given text {text} to {lang}"
     choices = make_openai_request([{"role": "user", "content": prompt}])
     return choices[0].message.content

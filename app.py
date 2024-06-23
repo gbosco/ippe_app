@@ -2,6 +2,8 @@ import os
 import requests
 from flask import Flask, request, redirect, jsonify
 from dotenv import load_dotenv, find_dotenv
+from config import config as cfg
+import chatgpt
 import kommo
 
 app = Flask(__name__)
@@ -55,18 +57,53 @@ def webhook():
         # Processar a mensagem recebida
         try:
             print("Processando mensagem:")
+            contact_id = data.get("message[add][0][contact_id]")
             text = data.get('message[add][0][text]', 'Sem Texto')
-
             author = data.get('message[add][0][author][name]', 'Autor Desconhecido')
 
             # Faça o processamento que você precisa com esses dados
             print(f"Texto da mensagem: {text}")
             print(f"Autor: {author}")
 
+            if contact_id is None:
+                return
+
+            contact = kommo.get_contact_by_id(contact_id)
+            lead_id = contact["_embedded"]["leads"][0][id]
+
+            text_english = chatgpt.translate_text(text, "english")
+            api_response = chatgpt.generate_text_response(text_english)
+            text_portuguese = chatgpt.translate_text(api_response)
+
+            payload = {
+                "custom_fields_values": [
+                    {
+                        "field_id": cfg["LEADS_FIELDS"].get("CHATGPT_RESPONSE"),
+                        "values": [{"value": text_portuguese}]
+                    }
+                ]
+            }
+
+            url = f"{base_url}/api/v4/leads/{lead_id}"
+            headers = kommo.get_kommo_headers()
+            patch_response = requests.patch(url, json=payload, headers=headers)
+            print(patch_response)
+            print("Set chatgpt generated response")
+
         except Exception as e:
             print("Erro ao processar a mensagem:", e)
 
     return jsonify({'status': 'success'}), 200
+
+
+@app.route("/leads", methods=["GET"])
+def get_leads():
+    try:
+        response, status = kommo.get_leads(base_url)
+        print(response)
+    except Exception as e:
+        print(e)
+        return str(e), 500
 
 
 # Webhook to listen when new lead added
@@ -94,11 +131,12 @@ def lead_webhook():
                 print(lead)
                 headers = kommo.get_kommo_headers()
                 payload = {
+                    "id": cfg["LEADS_FIELDS"].get("CHATGPT_RESPONSE"),
                     "name": "chatgpt_response",
                     "type": "text",
                     "is_api_only": True
                 }
-                response = requests.patch(f"{base_url}/api/v4/lead/custom_field", data=payload,headers=headers)
+                response = requests.patch(f"{base_url}/api/v4/leads/custom_field", data=payload, headers=headers)
                 status_code = response.status_code
                 if status_code == 200:
                     print("custom field added successfully")
